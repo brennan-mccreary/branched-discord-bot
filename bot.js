@@ -5,14 +5,16 @@ const axios = require('axios');
 const tmi = require('tmi.js');
 const clipChannelId = '705103840797655047';
 const interval = 60000;
-
-
+const adMsgInterval = 600000;
 
 //Function Imports
 const createClip = require('./Functions/createClip')
 const getBroadcasterId = require('./Functions/getBroadcasterId');
 const sendTwitchMessage = require('./Functions/sendTwitchMessage');
+const postClipToDiscord = require('./Functions/postClipToDiscord');
 
+//Interval Ads
+let adRoll;
 
 //Instantiate discord.js client
 const discordClient = new Discord.Client();
@@ -75,7 +77,8 @@ twitchClient.on('message', (channel, userstate, message, self) => {
                 createClip, 
                 interval, 
                 discordClient, 
-                clipChannelId
+                clipChannelId,
+                postClipToDiscord
             );
 
             sendTwitchMessage(
@@ -87,8 +90,30 @@ twitchClient.on('message', (channel, userstate, message, self) => {
         case 'connect':
             console.log(`${channel} connection established.`);
             break;
+        case 'startad':
+            if(userstate.username === 'zeparatist') {
+                sendTwitchMessage(twitchClient, channel,'[Ads Enabled...]')
+               adRoll = setInterval(() => {sendTwitchMessage(twitchClient, channel,`Use '!clipit' to capture ${channel.charAt(1).toUpperCase()}${channel.slice(2)}'s best moments!`)}, adMsgInterval );
+            }
+            else {
+                sendTwitchMessage(twitchClient, channel,'[Permission denied.]')
+            }
+            break;
+        case 'stopad':
+            if(userstate.username === 'zeparatist') {
+                clearInterval(adRoll);
+                sendTwitchMessage(twitchClient, channel,'[Ads Disabled...]')
+            }
+            else {
+                sendTwitchMessage(twitchClient, channel,'[Permission denied.]')
+            }
+            break;
         case 'test':
             sendTwitchMessage(twitchClient, channel,'test-message');
+            break;
+        case 'goodbye':
+            sendTwitchMessage(twitchClient, channel,'Logging off, Goodbye!');
+            process.exit();
             break;
         default:
             console.log('No command found');

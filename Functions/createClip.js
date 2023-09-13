@@ -14,7 +14,11 @@ async function createClip (channel, postClipToDiscord, interval, dClient, clipCh
             }
         })
         .then((res) => {
-            setTimeout(postClipToDiscord, interval, dClient, clipChannelId `https://clips.twitch.tv/${res.data.data[0].id}`);
+            setTimeout(() => {
+                postClipToDiscord(dClient, clipChannelId, `https://clips.twitch.tv/${res.data.data[0].id}`)
+            }, 
+            interval
+        );
             console.log(res.data);
         })
         .catch((err) => {

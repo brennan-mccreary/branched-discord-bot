@@ -3,7 +3,7 @@ require('dotenv').config()
 const axios = require('axios');
 
 
-async function getBroadcasterId (name, twitchClientToken, twitchOauthToken, createClip, interval, dClient, clipChannelId){
+async function getBroadcasterId (name, twitchClientToken, twitchOauthToken, createClip, interval, dClient, clipChannelId, postClipToDiscord){
     console.log(`Fetching Broadcaster ID for name: ${name}`);
 
     await axios

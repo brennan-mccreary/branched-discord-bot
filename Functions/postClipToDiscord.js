@@ -6,3 +6,5 @@ async function postClipToDiscord(dClient, clipChannelId, clipURL) {
                 \n${clipURL}`)
     
 }
+
+module.exports = postClipToDiscord;
